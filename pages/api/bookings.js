@@ -1,27 +1,18 @@
-import dbConnect from '../../lib/dbConnect';
-import Booking from '../../models/Booking';
+import dbConnect from '../../../lib/dbConnect';
+import Booking from '../../../models/Booking';
 
 export default async function handler(req, res) {
   await dbConnect();
 
-  if (req.method === 'GET') {
+  if (req.method === 'POST') {
     try {
-      const bookings = await Booking.find();
-      res.status(200).json({ bookings });
+      const booking = new Booking(req.body);
+      await booking.save();
+      res.status(201).json({ success: true, data: booking });
     } catch (error) {
-      console.error('Error fetching bookings:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  } else if (req.method === 'POST') {
-    try {
-      const newBooking = new Booking(req.body);
-      await newBooking.save();
-      res.status(201).json({ message: 'Booking saved successfully' });
-    } catch (error) {
-      console.error('Error saving booking:', error);
-      res.status(500).json({ error: 'Failed to save booking' });
+      res.status(400).json({ success: false, error: error.message });
     }
   } else {
-    res.status(405).json({ error: 'Method not allowed' });
+    res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
 }
