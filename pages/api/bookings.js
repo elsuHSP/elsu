@@ -1,5 +1,6 @@
-import dbConnect from '../../../lib/dbConnect';
-import Booking from '../../../models/Booking';
+import dbConnect from '../../lib/dbConnect';
+import Booking from '../../models/Booking';
+
 
 export default async function handler(req, res) {
   await dbConnect();
